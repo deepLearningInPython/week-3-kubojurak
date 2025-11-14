@@ -65,10 +65,9 @@ print(convolve_1d(input_array, kernel_array))
 # -----------------------------------------------
 
 def compute_output_size_2d(input_matrix, kernel_matrix):
-    input_height, input_width = input_matrix.shape
-    kernel_height, kernel_width = kernel_matrix.shape
-
-    return(input_height - kernel_height + 1, input_width - kernel_width +1 )
+    out_h = input_matrix.shape[0] - kernel_matrix.shape[0] + 1
+    out_w = input_matrix.shape[1] - kernel_matrix.shape[1] + 1
+    return (out_h, out_w)
 
 
 # -----------------------------------------------
@@ -85,16 +84,17 @@ def convolute_2d(input_matrix, kernel_matrix):
     # Tip: same tips as above, but you might need a nested loop here in order to
     # define which parts of the input matrix need to be multiplied with the kernel matrix.
     
-    dims = compute_output_size_2d(input_matrix, kernel_matrix)
-    output = np.empty(dims)
+    out_h, out_w = compute_output_size_2d(input_matrix, kernel_matrix)
+    output = np.empty((out_h, out_w))
 
-    kernel_height, kernel_width = kernel_matrix.shape
+    kh, kw = kernel_matrix.shape
 
-    for i in range(dims[0]):
-        for j in range(dims[1]):
-            window = input_matrix[i: i + kernel_height, j: j + kernel_width]
+    for i in range(out_h):        # rows
+        for j in range(out_w):    # columns
+            window = input_matrix[i:i+kh, j:j+kw]  # use j for columns
+            output[i, j] = np.sum(window * kernel_matrix)
 
-            output[i, j] = np.sum(window*kernel_matrix)
+    return output
 
 
 # -----------------------------------------------
